@@ -55,12 +55,12 @@ class User(ModelBase, Base):
 
 
     @classmethod
-    def get_user(cls, session, user):
+    def get_user(cls, session, user_id):
         return session.query(
             cls.id,
             cls.user,
             cls.password,
             cls.active,
             cls.date_created
-        ).filter(User.user == user).all()
+        ).filter(User.id == user_id).all()
 

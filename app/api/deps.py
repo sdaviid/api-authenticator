@@ -51,7 +51,7 @@ def authenticate_user(username: str, password: str, client_id: str):
                 roles.append(role.value)
             return {
                 'user_data': data_user,
-                'roles': roles,
+                'role': roles,
                 'client_id': client_id
             }
     return False
@@ -71,19 +71,23 @@ def create_access_token(data: dict, expires_delta: Union[timedelta, None] = None
 async def get_current_user(token: str = Depends(oauth2_scheme)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
+        detail="Could not validate credentials2",
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        options = {"verify_signature": True, "verify_aud": False, "exp": True}
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM], options=options)
         username: str = payload.get("sub")
         if username is None:
             raise credentials_exception
         token_data = TokenData(username=username)
-    except JWTError:
+    except JWTError as err:
+        print('aki')
+        print(err)
         raise credentials_exception
-    user = User.get_user(session=SessionLocal(), user=token_data.username)
+    user = User.get_user(session=SessionLocal(), user_id=token_data.username)
     if user is None:
+        print('aki1')
         raise credentials_exception
     return user[0]
 

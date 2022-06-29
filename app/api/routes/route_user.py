@@ -21,6 +21,12 @@ from app.models.schemas.user import(
 
 from app.core.database import get_db
 
+from app.api.rolecheck import RoleChecker
+
+
+allow_create_resource = RoleChecker(["admin"])
+
+
 
 router = APIRouter()
 
@@ -35,7 +41,7 @@ def add_user(data: UserAdd, response: Response, db: Session = Depends(get_db)):
 
 
 
-@router.get("/me/", response_model=UserDetailData)
+@router.get("/me/", response_model=UserDetailData, dependencies=[Depends(allow_create_resource)])
 async def read_users_me(current_user: UserDetailData = Depends(get_current_active_user)):
     return current_user
 
