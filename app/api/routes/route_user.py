@@ -34,7 +34,8 @@ router = APIRouter()
 @router.post(
     '/add',
     status_code=status.HTTP_200_OK,
-    response_model=UserDetailData
+    response_model=UserDetailData,
+    dependencies=[Depends(allow_create_resource)]
 )
 def add_user(data: UserAdd, response: Response, db: Session = Depends(get_db)):
     return User.add(session=db, data=data)
