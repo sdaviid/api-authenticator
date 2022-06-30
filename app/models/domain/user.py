@@ -48,19 +48,20 @@ class User(ModelBase, Base):
 
     @classmethod
     def check_login(cls, session, user, password):
-        temp_user_data = session.query(
-            cls.id,
-            cls.user,
-            cls.password,
-            cls.active,
-            cls.date_created
-        ).filter(User.user == user).all()
-        if temp_user_data:
-            print(type(password))
-            print(type(temp_user_data[0].password))
-            hashed_password = bcrypt.checkpw(password.encode('utf-8'), temp_user_data[0].password.decode().encode('utf-8'))
-            if hashed_password:
-                return temp_user_data
+        try:
+            temp_user_data = session.query(
+                cls.id,
+                cls.user,
+                cls.password,
+                cls.active,
+                cls.date_created
+            ).filter(User.user == user).one()
+            if temp_user_data:
+                hashed_password = bcrypt.checkpw(password.encode('utf-8'), temp_user_data[0].password.decode().encode('utf-8'))
+                if hashed_password:
+                    return temp_user_data
+        except Exception as err:
+            print(f'exception check login - {err}')
         return []
 
 
