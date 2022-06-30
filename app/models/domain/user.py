@@ -57,7 +57,7 @@ class User(ModelBase, Base):
                 cls.date_created
             ).filter(User.user == user).one()
             if temp_user_data:
-                hashed_password = bcrypt.checkpw(password.encode('utf-8'), temp_user_data[0].password.decode().encode('utf-8'))
+                hashed_password = bcrypt.checkpw(password.encode('utf-8'), temp_user_data.password.decode().encode('utf-8'))
                 if hashed_password:
                     return temp_user_data
         except Exception as err:

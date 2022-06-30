@@ -43,7 +43,7 @@ def authenticate_user(username: str, password: str, client_id: str):
     if not response_user:
         return False
     else:
-        data_user = response_user[0]
+        data_user = response_user
         response_roles = Roles.check_roles_client_id(session=SessionLocal(), id_user=data_user.id, client_id=client_id)
         if response_roles:
             roles = []
